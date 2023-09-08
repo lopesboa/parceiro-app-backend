@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { LoggerModule } from '@/common/Logger/logger.module';
+import { LoggerModule, CryptographyModule } from '@/common';
 
 @Module({
   imports: [
@@ -11,6 +11,7 @@ import { LoggerModule } from '@/common/Logger/logger.module';
       envFilePath: globalThis.ENV_FILE || '.env',
     }),
     LoggerModule,
+    CryptographyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
