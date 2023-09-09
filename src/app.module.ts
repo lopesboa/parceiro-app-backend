@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { LoggerModule, CryptographyModule } from '@/common';
+import { LoggerModule, CryptographyModule, DatabaseModule } from '@/common';
 
 @Module({
   imports: [
@@ -12,6 +12,7 @@ import { LoggerModule, CryptographyModule } from '@/common';
     }),
     LoggerModule,
     CryptographyModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
