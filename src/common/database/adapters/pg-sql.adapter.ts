@@ -11,7 +11,7 @@ export class PostgreSQLAdapter implements Connection {
       connectionString: process.env.DATABASE_URL,
       port: Number(process.env.DATABASE_POR),
       ssl: {
-        key: process.env.DATABASE_SSL_CERT?.replace(/\\n/g, '\n'),
+        ca: process.env.DATABASE_SSL_CERT?.replace(/\\n/g, '\n'),
       },
       max: 15,
     });
