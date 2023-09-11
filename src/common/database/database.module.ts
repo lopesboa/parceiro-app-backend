@@ -5,6 +5,6 @@ import { PostgreSQLAdapter } from './adapters';
 @Module({
   imports: [],
   providers: [{ provide: 'Connection', useClass: PostgreSQLAdapter }],
-  exports: [],
+  exports: [{ provide: 'Connection', useClass: PostgreSQLAdapter }],
 })
 export class DatabaseModule {}
