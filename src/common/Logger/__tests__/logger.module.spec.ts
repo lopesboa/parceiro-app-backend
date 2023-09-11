@@ -31,7 +31,6 @@ describe('LoggerModule', () => {
   describe('in development environment', () => {
     let pinoLoggerModuleSpy: jest.SpyInstance;
 
-    console.log('process.env.NODE_ENV', process.env.NODE_ENV);
     beforeEach(async () => {
       process.env.NODE_ENV = 'development';
       pinoLoggerModuleSpy = jest.spyOn(PinoLoggerModule, 'forRoot');

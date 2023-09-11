@@ -5,8 +5,12 @@ import { JWTAdapterImplementation } from './adapters/jwt.adapter';
 
 @Module({
   imports: [LoggerModule],
-  providers: [{ provide: 'JWTAdapter', useClass: JWTAdapterImplementation }],
+  providers: [
+    { provide: 'CryptographAdapter', useClass: JWTAdapterImplementation },
+  ],
   controllers: [],
-  exports: [{ provide: 'JWTAdapter', useClass: JWTAdapterImplementation }],
+  exports: [
+    { provide: 'CryptographAdapter', useClass: JWTAdapterImplementation },
+  ],
 })
 export class CryptographyModule {}
