@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule, CryptographyModule, DatabaseModule } from '@/common';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { LoggerModule, CryptographyModule, DatabaseModule } from '@/common';
     LoggerModule,
     CryptographyModule,
     DatabaseModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
