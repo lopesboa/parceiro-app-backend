@@ -20,9 +20,8 @@ const pinoHttp = {
       'email',
       'cookie',
       'req.headers.cookie',
-      'signedPayload',
     ],
-    censor: '[Sanar Redacted]',
+    censor: '[ParceiroApp Redacted]',
   },
   timestamp: () => `,"time":"${date}"`,
   genReqId: (req) => req.headers['x-request-id'],
@@ -36,15 +35,16 @@ const pinoHttp = {
     }),
   ],
   providers: [
+    AppLoggerAdapter,
     {
       provide: 'Logger',
-      useExisting: PinoLogger,
+      useExisting: AppLoggerAdapter,
     },
-    AppLoggerAdapter,
+    {
+      provide: 'PinoLogger',
+      useClass: PinoLogger,
+    },
   ],
-  exports: [
-    AppLoggerAdapter,
-    { provide: 'Logger', useClass: AppLoggerAdapter },
-  ],
+  exports: [{ provide: 'Logger', useClass: AppLoggerAdapter }],
 })
 export class LoggerModule {}
