@@ -1,4 +1,4 @@
-import { CreateUserUseCase } from '@/modules/user/domain';
+import { CreateUserUseCase } from '@/modules/users/domain';
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 
 @Controller('user')
