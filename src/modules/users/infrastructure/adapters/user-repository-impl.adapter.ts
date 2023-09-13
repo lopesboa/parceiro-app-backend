@@ -27,7 +27,7 @@ export class UserRepositoryImplementation implements UserRepository {
       ];
       await this.connection.query(text, values);
     } catch (error) {
-      this.logger.error(error);
+      this.logger.fatal(error, 'error while trying to insert user');
       throw new UnprocessableEntityException(
         {
           ...error,
@@ -43,17 +43,18 @@ export class UserRepositoryImplementation implements UserRepository {
   async update(user: UserEntity): Promise<void> {
     try {
       await this.connection.query(
-        'update into user(first_name, last_name, email, password, is_verified) values($1, $2, $3, $4, $5)',
+        'update into users(first_name, last_name, email, password, is_verified, token_id) values($1, $2, $3, $4, $5, $6)',
         [
           user.firstName,
           user.lastName,
           user.email,
           user.password,
           user.isVerified,
+          user.tokenId,
         ],
       );
     } catch (error) {
-      this.logger.error(error);
+      this.logger.fatal(error, 'error while trying to update user');
       throw new UnprocessableEntityException(
         {
           ...error,
@@ -72,12 +73,12 @@ export class UserRepositoryImplementation implements UserRepository {
 
   async get(userId: string): Promise<UserEntity> {
     try {
-      return this.connection.query(
-        'select * from user where user_id = $1 and is_verified is true',
+      return await this.connection.query(
+        'select * from users where user_id = $1',
         [userId],
       );
     } catch (error) {
-      this.logger.error(error);
+      this.logger.fatal(error, 'error while trying to get user');
       throw new UnprocessableEntityException(
         {
           ...error,
