@@ -67,10 +67,6 @@ export class UserRepositoryImplementation implements UserRepository {
     }
   }
 
-  list(): Promise<UserEntity[]> {
-    throw new Error('Method not implemented.');
-  }
-
   async get(userId: string): Promise<UserEntity> {
     try {
       return await this.connection.query(
@@ -82,6 +78,25 @@ export class UserRepositoryImplementation implements UserRepository {
       throw new UnprocessableEntityException(
         {
           ...error,
+          message: error.message,
+          stack: error.stack,
+          code: error.code,
+        },
+        'error while trying to get user',
+      );
+    }
+  }
+
+  async findOne(params) {
+    try {
+      return await this.connection.query(
+        'select * from users where email = $1 or user_id = $2',
+        [params.email || null, params.userId || null],
+      );
+    } catch (error) {
+      this.logger.fatal(error, 'error while trying to get user');
+      throw new UnprocessableEntityException(
+        {
           message: error.message,
           stack: error.stack,
           code: error.code,
