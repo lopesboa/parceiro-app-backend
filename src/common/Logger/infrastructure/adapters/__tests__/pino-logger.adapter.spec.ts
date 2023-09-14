@@ -17,7 +17,10 @@ describe('AppLoggerAdapter', () => {
     } as any;
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AppLoggerAdapter, { provide: 'Logger', useValue: logger }],
+      providers: [
+        AppLoggerAdapter,
+        { provide: 'PinoLogger', useValue: logger },
+      ],
     }).compile();
 
     appLoggerAdapter = module.get<AppLoggerAdapter>(AppLoggerAdapter);
@@ -111,5 +114,20 @@ describe('AppLoggerAdapter', () => {
     appLoggerAdapter.error(undefined, 'optional');
 
     expect(logger.error).toHaveBeenCalledWith(['optional'], undefined);
+  });
+  it('should handle error method call with undefined message and optionalParams', () => {
+    appLoggerAdapter.fatal(undefined, 'optional');
+
+    expect(logger.fatal).toHaveBeenCalledWith(['optional'], undefined);
+  });
+  it('should handle error method call with undefined message and optionalParams', () => {
+    appLoggerAdapter.trace(undefined, 'optional');
+
+    expect(logger.trace).toHaveBeenCalledWith(['optional'], undefined);
+  });
+  it('should handle error method call with undefined message and optionalParams', () => {
+    appLoggerAdapter.info(undefined, 'optional');
+
+    expect(logger.info).toHaveBeenCalledWith(['optional'], undefined);
   });
 });
