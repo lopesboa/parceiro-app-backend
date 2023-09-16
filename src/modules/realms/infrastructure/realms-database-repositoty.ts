@@ -18,7 +18,7 @@ export class RealmsDatabaseRepository implements RealmsRepository {
   async save(realm: Realms) {
     try {
       const text = 'INSERT INTO realms(name, description) VALUES($1, $2)';
-      const values = [, realm.name, realm.description];
+      const values = [realm.name, realm.description];
       await this.connection.query(text, values);
       await this.connection.close();
     } catch (error) {
