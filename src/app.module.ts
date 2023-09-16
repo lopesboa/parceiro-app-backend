@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerModule, CryptographyModule, DatabaseModule } from '@/common';
 import { UserModule } from './modules/users/user.module';
 import { RealmsModule } from './modules/realms/realms.module';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RealmsModule } from './modules/realms/realms.module';
     DatabaseModule,
     UserModule,
     RealmsModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
