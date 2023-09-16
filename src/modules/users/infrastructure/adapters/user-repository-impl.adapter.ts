@@ -19,11 +19,11 @@ export class UserRepositoryImplementation implements UserRepository {
       const text =
         'INSERT INTO users(first_name, last_name, email, password, application_id) VALUES($1, $2, $3, $4, $5)';
       const values = [
-        user.firstName,
-        user.lastName,
+        user.first_name,
+        user.last_name,
         user.email,
         user.password,
-        user.applicationId,
+        user.application_id,
       ];
       await this.connection.query(text, values);
       await this.connection.close();
@@ -46,12 +46,12 @@ export class UserRepositoryImplementation implements UserRepository {
       await this.connection.query(
         'update into users(first_name, last_name, email, password, is_verified, token_id) values($1, $2, $3, $4, $5, $6)',
         [
-          user.firstName,
-          user.lastName,
+          user.first_name,
+          user.last_name,
           user.email,
           user.password,
-          user.isVerified,
-          user.tokenId,
+          user.is_verified,
+          user.token_id,
         ],
       );
     } catch (error) {
@@ -68,14 +68,14 @@ export class UserRepositoryImplementation implements UserRepository {
     }
   }
 
-  async get(userId: string): Promise<UserEntity> {
+  async getAll(limit: number, offset?: number): Promise<[UserEntity]> {
     try {
       const result = await this.connection.query(
-        'select * from users where user_id = $1',
-        [userId],
+        'select * from users limit $1 offset $2',
+        [limit, offset],
       );
 
-      return result.rows[0];
+      return result.rows[0] || [];
     } catch (error) {
       this.logger.fatal(error, 'error while trying to get user');
       throw new UnprocessableEntityException(
@@ -93,11 +93,11 @@ export class UserRepositoryImplementation implements UserRepository {
   async findOne(params) {
     try {
       const result = await this.connection.query(
-        'select * from users where email = $1 or user_id = $2',
-        [params.email, params.userId],
+        'select * from users where email = $1 or user_id = $2 limit $3 offset $4',
+        [params.email, params.userId, 1, 0],
       );
 
-      return result.rows[0];
+      return result.rows[0] || null;
     } catch (error) {
       this.logger.fatal(error, 'error while trying to get user');
       throw new UnprocessableEntityException(
