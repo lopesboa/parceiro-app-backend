@@ -1,2 +1,2 @@
 export * from './usecase';
-export * from './presentation';
+export * from '../presentation';
