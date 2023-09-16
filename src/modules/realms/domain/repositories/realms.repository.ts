@@ -1,6 +1,8 @@
+import { Realms } from '../entities';
+
 export type RealmsRepository = {
-  save(realm): Promise<void>;
-  update(realm): Promise<void>;
-  get(realmId: string): Promise<any>;
-  findOne(params): Promise<any>;
+  save(realms: Realms): Promise<void>;
+  update(realm: Realms): Promise<void>;
+  findOne(realmId: string): Promise<Realms>;
+  delete(realmId: string): Promise<void>;
 };
