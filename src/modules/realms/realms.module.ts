@@ -1,13 +1,22 @@
 import { Module } from '@nestjs/common';
-import { RealmsDatabaseRepository } from './infrastructure/realms-database-repositoty';
+
+import {
+  CreateRealmUseCaseImplementation,
+  ListRealmUseCaseImplementation,
+} from './application';
 import { RealmsController } from './presentation';
-import { CreateRealmUseCaseImplementation } from './application';
+import { RealmsDatabaseRepository } from './infrastructure/realms-database-repositoty';
+
 @Module({
   providers: [
     { provide: 'RealmsRepository', useClass: RealmsDatabaseRepository },
     {
       provide: 'CreateRealmUseCase',
       useClass: CreateRealmUseCaseImplementation,
+    },
+    {
+      provide: 'ListRealmUseCase',
+      useClass: ListRealmUseCaseImplementation,
     },
   ],
   controllers: [RealmsController],

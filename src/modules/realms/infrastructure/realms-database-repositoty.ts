@@ -20,7 +20,6 @@ export class RealmsDatabaseRepository implements RealmsRepository {
       const text = 'INSERT INTO realms(name, description) VALUES($1, $2)';
       const values = [realm.name, realm.description];
       await this.connection.query(text, values);
-      await this.connection.close();
     } catch (error) {
       this.logger.fatal(error, 'error while trying to insert realm');
       throw new UnprocessableEntityException(
@@ -92,5 +91,14 @@ export class RealmsDatabaseRepository implements RealmsRepository {
         'Error while trying to delete realm',
       );
     }
+  }
+
+  async getAll(limit: number, offset: number): Promise<[Realms]> {
+    const result = await this.connection.query(
+      'select * from realms limit $1 offset $2',
+      [limit, offset],
+    );
+
+    return result.rows;
   }
 }
