@@ -1,5 +1,5 @@
-import { CreateUserUseCase } from '@/modules/users/domain';
 import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { CreateUserUseCase } from '../../application/types';
 
 @Controller('user')
 export class UserController {
