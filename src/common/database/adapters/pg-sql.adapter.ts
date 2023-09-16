@@ -15,7 +15,6 @@ export class PostgreSQLAdapter implements Connection {
       },
       max: 15,
     });
-    this.connection.connect();
   }
 
   query(statement: string, params: any) {
