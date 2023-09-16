@@ -26,6 +26,7 @@ export class UserRepositoryImplementation implements UserRepository {
         user.applicationId,
       ];
       await this.connection.query(text, values);
+      await this.connection.close();
     } catch (error) {
       this.logger.fatal(error, 'error while trying to insert user');
       throw new UnprocessableEntityException(
@@ -69,10 +70,12 @@ export class UserRepositoryImplementation implements UserRepository {
 
   async get(userId: string): Promise<UserEntity> {
     try {
-      return await this.connection.query(
+      const result = await this.connection.query(
         'select * from users where user_id = $1',
         [userId],
       );
+
+      return result.rows[0];
     } catch (error) {
       this.logger.fatal(error, 'error while trying to get user');
       throw new UnprocessableEntityException(
