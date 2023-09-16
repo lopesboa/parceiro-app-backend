@@ -26,7 +26,6 @@ export class UserRepositoryImplementation implements UserRepository {
         user.application_id,
       ];
       await this.connection.query(text, values);
-      await this.connection.close();
     } catch (error) {
       this.logger.fatal(error, 'error while trying to insert user');
       throw new UnprocessableEntityException(
@@ -75,7 +74,7 @@ export class UserRepositoryImplementation implements UserRepository {
         [limit, offset],
       );
 
-      return result.rows[0] || [];
+      return result.rows;
     } catch (error) {
       this.logger.fatal(error, 'error while trying to get user');
       throw new UnprocessableEntityException(
