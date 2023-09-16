@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UserRepositoryImplementation } from './infrastructure';
 import { CreateUser } from './application/usecase/create-user.usecase';
-import { UserController } from './application/presentation/controller/user.controller';
+import { UserController } from './presentation/controller/user.controller';
 import { CryptographyModule } from '@/common';
 
 @Module({

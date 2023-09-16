@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserUseCase, UserEntity, UserRepository } from '../../domain';
 import { Hash } from '@/common/cryptography/adapters/types';
 
@@ -13,6 +13,15 @@ export class CreateUser implements CreateUserUseCase {
     const hashedPassword = await this.cryptographAdapter.hash(
       createUserDTO.password,
     );
+
+    const checkEmail = await this.userRepository.findOne({
+      email: createUserDTO.email,
+    });
+
+    if (checkEmail?.email) {
+      throw new ConflictException('A user with this email already exists.');
+    }
+
     const user = {
       ...createUserDTO,
       password: hashedPassword,

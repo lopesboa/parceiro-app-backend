@@ -89,10 +89,12 @@ export class UserRepositoryImplementation implements UserRepository {
 
   async findOne(params) {
     try {
-      return await this.connection.query(
+      const result = await this.connection.query(
         'select * from users where email = $1 or user_id = $2',
-        [params.email || null, params.userId || null],
+        [params.email, params.userId],
       );
+
+      return result.rows[0];
     } catch (error) {
       this.logger.fatal(error, 'error while trying to get user');
       throw new UnprocessableEntityException(
