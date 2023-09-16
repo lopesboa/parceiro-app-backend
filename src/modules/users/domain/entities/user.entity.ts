@@ -1,13 +1,13 @@
 export class UserEntity {
-  userId: string;
-  firstName: string;
-  lastName: string;
+  user_id?: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
-  applicationId: string;
-  tokenId?: string;
-  isVerified?: boolean;
-  lastAccess?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
+  application_id: string;
+  token_id?: string;
+  is_verified?: boolean;
+  last_access?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
