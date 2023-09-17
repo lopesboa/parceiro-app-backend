@@ -7,6 +7,7 @@ import { UserModule } from './modules/users/user.module';
 import { RealmsModule } from './modules/realms/realms.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -15,6 +16,13 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       envFilePath: globalThis.ENV_FILE || '.env',
     }),
     EventEmitterModule.forRoot(),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT),
+        password: process.env.REDIS_PASSWORD,
+      },
+    }),
     LoggerModule,
     CryptographyModule,
     DatabaseModule,
