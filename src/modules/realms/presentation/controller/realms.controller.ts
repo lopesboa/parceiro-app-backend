@@ -25,6 +25,6 @@ export class RealmsController {
 
   @Post()
   async createRealm(@Body() params: CreateRealmInputDTO) {
-    await this.creteRealmUseCase.execute(params);
+    return this.creteRealmUseCase.execute(params);
   }
 }
