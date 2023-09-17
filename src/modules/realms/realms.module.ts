@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import {
   CreateRealmUseCaseImplementation,
@@ -18,6 +19,7 @@ import { RealmsDatabaseRepository } from './infrastructure/realms-database-repos
       provide: 'ListRealmUseCase',
       useClass: ListRealmUseCaseImplementation,
     },
+    { provide: 'EventEmitter', useExisting: EventEmitter2 },
   ],
   controllers: [RealmsController],
 })
