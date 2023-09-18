@@ -1,5 +1,6 @@
+import { Realms } from '../../domain/entities';
 import { CreateRealmInputDTO } from '../dtos';
 
 export type CreateRealmUseCase = {
-  execute(params: CreateRealmInputDTO): Promise<void>;
+  execute(params: CreateRealmInputDTO): Promise<Realms>;
 };

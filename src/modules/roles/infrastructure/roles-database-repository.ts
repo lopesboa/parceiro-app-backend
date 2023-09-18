@@ -6,25 +6,23 @@ import {
 
 import { Connection } from '@/common/database/types';
 import { Logger } from '@/common/Logger/infrastructure/types';
-import { RealmsRepository } from '../domain/repositories';
-import { Realms } from '../domain/entities';
+import { RolesRepository } from '../domain/repositories';
+import { Roles } from '../domain/entities';
 
 @Injectable()
-export class RealmsDatabaseRepository implements RealmsRepository {
+export class RolesDatabaseRepository implements RolesRepository {
   constructor(
     @Inject('Connection') private readonly connection: Connection,
     @Inject('Logger') private readonly logger: Logger,
   ) {}
-  async save(realm: Realms) {
+  async save(role: Roles) {
     try {
       const text =
-        'INSERT INTO realms(name, description) VALUES($1, $2) RETURNING *';
-      const values = [realm.name, realm.description];
-      const result = await this.connection.query(text, values);
-
-      return result.rows[0];
+        'INSERT INTO roles(name, application_id, permissions) VALUES($1, $2, $3)';
+      const values = [role.name, role.application_id, role.permissions];
+      await this.connection.query(text, values);
     } catch (error) {
-      this.logger.fatal(error, 'error while trying to insert realm');
+      this.logger.fatal(error, 'error while trying to insert role');
       throw new UnprocessableEntityException(
         {
           ...error,
@@ -32,19 +30,19 @@ export class RealmsDatabaseRepository implements RealmsRepository {
           stack: error.stack,
           code: error.code,
         },
-        'error while trying to insert realm',
+        'error while trying to insert role',
       );
     }
   }
 
-  async update(realm: Realms) {
+  async update(role: Roles) {
     try {
       await this.connection.query(
-        'update into realms(name, description) values($1, $2)',
-        [realm.name, realm.description],
+        'update into roles(name, application_id) values($1, $2)',
+        [role.name, role.application_id],
       );
     } catch (error) {
-      this.logger.fatal(error, 'error while trying to update realm');
+      this.logger.fatal(error, 'error while trying to update role');
       throw new UnprocessableEntityException(
         {
           ...error,
@@ -52,53 +50,53 @@ export class RealmsDatabaseRepository implements RealmsRepository {
           stack: error.stack,
           code: error.code,
         },
-        'error while trying to update realm',
+        'error while trying to update role',
       );
     }
   }
 
-  async findOne(realmId: string): Promise<Realms> {
+  async findOne(roleId: string): Promise<Roles> {
     try {
       const result = await this.connection.one(
-        'select * from realms where realm_id = $1',
-        [realmId],
+        'select * from roles where role_id = $1',
+        [roleId],
       );
 
       return result.rows[0];
     } catch (error) {
-      this.logger.fatal(error, 'Error while trying to get realm');
+      this.logger.fatal(error, 'Error while trying to get role');
       throw new UnprocessableEntityException(
         {
           message: error.message,
           stack: error.stack,
           code: error.code,
         },
-        'Error while trying to get realm',
+        'Error while trying to get role',
       );
     }
   }
 
-  async delete(realmId: string) {
+  async delete(roleId: string) {
     try {
-      await this.connection.query('delete from realms where realm_id = $1', [
-        realmId,
+      await this.connection.query('delete from roles where role_id = $1', [
+        roleId,
       ]);
     } catch (error) {
-      this.logger.fatal(error, 'Error while trying to delete realm');
+      this.logger.fatal(error, 'Error while trying to delete role');
       throw new UnprocessableEntityException(
         {
           message: error.message,
           stack: error.stack,
           code: error.code,
         },
-        'Error while trying to delete realm',
+        'Error while trying to delete role',
       );
     }
   }
 
-  async getAll(limit: number, offset: number): Promise<[Realms]> {
+  async getAll(limit: number, offset: number): Promise<[Roles]> {
     const result = await this.connection.query(
-      'select * from realms limit $1 offset $2',
+      'select * from roles limit $1 offset $2',
       [limit, offset],
     );
 
