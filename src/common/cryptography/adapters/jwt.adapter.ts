@@ -33,7 +33,11 @@ export class JWTAdapterImplementation
     try {
       return jwt.sign(payload, secretOrPrivateKey, options);
     } catch (error) {
-      this.logger.error({ error }, 'Error while trying to encrypt payload');
+      this.logger.error('Error while trying to encrypt payload', {
+        message: error.message,
+        stack: error.stack,
+        code: error.code,
+      });
     }
   }
 
