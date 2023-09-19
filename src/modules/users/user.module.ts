@@ -11,6 +11,8 @@ import { CryptographyModule } from '@/common';
     { provide: 'CreateUserUseCase', useClass: CreateUser },
   ],
   controllers: [UserController],
-  exports: [],
+  exports: [
+    { provide: 'UserRepository', useClass: UserRepositoryImplementation },
+  ],
 })
 export class UserModule {}
