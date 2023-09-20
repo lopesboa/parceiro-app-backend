@@ -8,6 +8,7 @@ import { RealmsModule } from './modules/realms/realms.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bull';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { BullModule } from '@nestjs/bull';
     UserModule,
     RealmsModule,
     RolesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
