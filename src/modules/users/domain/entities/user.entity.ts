@@ -1,5 +1,7 @@
+import { UUID } from 'crypto';
+
 export class UserEntity {
-  user_id?: string;
+  user_id?: UUID;
   first_name: string;
   last_name: string;
   email: string;
