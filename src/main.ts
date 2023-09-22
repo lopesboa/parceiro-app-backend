@@ -1,6 +1,7 @@
 import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import * as passport from 'passport';
 
 import { AppModule } from './app.module';
 import { AppLoggerAdapter } from '@/common/Logger/infrastructure/adapters';
@@ -11,6 +12,7 @@ async function bootstrap() {
   app.enableCors();
   app.use(helmet());
   app.setGlobalPrefix('v1');
+  app.use(passport.initialize());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
