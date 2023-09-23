@@ -1,15 +1,26 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from '../users/user.module';
-import { AuthController } from './presentation/controller/auth.controller';
-import { SignInUseCaseImplementation } from './application/usecase/sig-in-use-case';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+
+import {
+  AccessTokenStrategy,
+  LocalStrategy,
+  LoginServiceImplementation,
+  RefreshTokenStrategy,
+} from './application';
 import { CryptographyModule } from '@/common';
+import { UserModule } from '../users/user.module';
 import { UserTokenDatabaseRepository } from './infrastructure';
+import { AuthController } from './presentation/controller/auth.controller';
 
 @Module({
-  imports: [UserModule, CryptographyModule],
+  imports: [UserModule, CryptographyModule, PassportModule],
   providers: [
-    { provide: 'SignInUseCase', useClass: SignInUseCaseImplementation },
+    LocalStrategy,
+    RefreshTokenStrategy,
+    AccessTokenStrategy,
     { provide: 'UserTokenRepository', useClass: UserTokenDatabaseRepository },
+    { provide: 'LoginService', useClass: LoginServiceImplementation },
   ],
   controllers: [AuthController],
 })
