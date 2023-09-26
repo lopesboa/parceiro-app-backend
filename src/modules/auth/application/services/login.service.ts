@@ -1,10 +1,11 @@
-import { UserRepository } from '@/modules/users/domain';
 import { SignInInputDTO } from '../dtos';
 import { LoginService } from '../types';
 import {
   CreateTokenAdapter,
   HashComparer,
 } from '@/common/cryptography/adapters/types';
+import { SYSTEM_ROLES } from '@/common/config';
+import { UserRepository } from '@/modules/users/domain';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
@@ -52,7 +53,7 @@ export class LoginServiceImplementation implements LoginService {
       await this.createTokenAdapter.getTokens({
         userId: user.userId,
         name: user.firstName,
-        permissions: [],
+        permissions: [SYSTEM_ROLES.CAR_OWNER_USER],
       });
 
     return { accessToken, refreshToken };
