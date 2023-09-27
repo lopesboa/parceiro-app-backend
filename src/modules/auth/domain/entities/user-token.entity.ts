@@ -5,7 +5,7 @@ export class UserToken {
   user_id: UUID;
   access_token: string;
   refresh_token: string;
+  is_active: boolean;
   created_at: Date;
   updated_at: Date;
-  is_active: boolean;
 }
