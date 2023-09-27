@@ -38,8 +38,8 @@ export class RolesDatabaseRepository implements RolesRepository {
   async update(role: Roles) {
     try {
       await this.connection.query(
-        'update into roles(name, application_id) values($1, $2)',
-        [role.name, role.application_id],
+        'update roles set name = $1, application_id = $2 where role_id = $3',
+        [role.name, role.application_id, role.role_id],
       );
     } catch (error) {
       this.logger.fatal(error, 'error while trying to update role');
@@ -55,11 +55,11 @@ export class RolesDatabaseRepository implements RolesRepository {
     }
   }
 
-  async findOne(roleId: string): Promise<Roles> {
+  async findOne(roleName: string): Promise<Roles> {
     try {
       const result = await this.connection.one(
-        'select * from roles where role_id = $1',
-        [roleId],
+        'select * from roles where name = $1',
+        [roleName],
       );
 
       return result.rows[0];
