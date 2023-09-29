@@ -43,7 +43,7 @@ export class UserRepositoryImplementation implements UserRepository {
   async update(user: UserEntity): Promise<void> {
     try {
       await this.connection.query(
-        'update into users(first_name, last_name, email, password, is_verified, token_id) values($1, $2, $3, $4, $5, $6)',
+        'update users set first_name = $1, last_name = $2, email = $3, password = $4, is_verified = $5, token_id = $6 where user_id = $7',
         [
           user.first_name,
           user.last_name,
@@ -51,9 +51,11 @@ export class UserRepositoryImplementation implements UserRepository {
           user.password,
           user.is_verified,
           user.token_id,
+          user.user_id,
         ],
       );
     } catch (error) {
+      console.log('error', error);
       this.logger.fatal(error, 'error while trying to update user');
       throw new UnprocessableEntityException(
         {
