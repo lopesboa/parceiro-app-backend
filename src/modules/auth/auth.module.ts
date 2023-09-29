@@ -4,11 +4,11 @@ import { PassportModule } from '@nestjs/passport';
 import {
   AccessTokenStrategy,
   LocalStrategy,
-  LoginServiceImplementation,
   RefreshTokenStrategy,
-} from './application';
+} from './presentation';
 import { CryptographyModule } from '@/common';
 import { UserModule } from '../users/user.module';
+import { LoginServiceImplementation } from './application';
 import { UserTokenDatabaseRepository } from './infrastructure';
 import { AuthController } from './presentation/controller/auth.controller';
 
