@@ -7,12 +7,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import {
-  LocalAuthGuard,
-  AccessTokenGuard,
-  RefreshTokenGuard,
-} from '../../application/guards';
 import { LoginService } from '../../application/types';
+import { AccessTokenGuard, LocalAuthGuard, RefreshTokenGuard } from '../guards';
 
 @Controller('auth')
 export class AuthController {
