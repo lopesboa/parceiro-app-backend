@@ -39,6 +39,7 @@ export class CreateTokenAdapterImplementation implements CreateTokenAdapter {
     name,
     permissions,
   }: RefreshTokenInputDTO) {
+    //TODO: compare the token before encrypting it
     if (!tokenToRefresh) throw new ForbiddenException('Access Denied');
 
     const refreshTokenMatches = await this.encryptAdapter.compare(
@@ -82,8 +83,6 @@ export class CreateTokenAdapterImplementation implements CreateTokenAdapter {
         noTimestamp: true,
       },
     );
-
-    console.log({ accessToken, refreshToken });
 
     return {
       accessToken,
