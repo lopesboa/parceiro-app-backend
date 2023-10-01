@@ -15,11 +15,11 @@ export class UserTokenDatabaseRepository implements UserTokenRepository {
     @Inject('Connection') private readonly connection: Connection,
     @Inject('Logger') private readonly logger: Logger,
   ) {}
-  async save({ access_token, refresh_token, user_id }: UserToken) {
+  async save({ access_token, refresh_token, user_id, is_active }: UserToken) {
     try {
       const text =
-        'INSERT INTO user_token(access_token, refresh_token, user_id) VALUES($1, $2, $3) RETURNING *';
-      const values = [access_token, refresh_token, user_id];
+        'INSERT INTO user_token(access_token, refresh_token, user_id, is_active) VALUES($1, $2, $3, $4) RETURNING *';
+      const values = [access_token, refresh_token, user_id, is_active];
       const result = await this.connection.query(text, values);
 
       return result.rows[0];
@@ -37,11 +37,11 @@ export class UserTokenDatabaseRepository implements UserTokenRepository {
     }
   }
 
-  async update({ access_token, refresh_token, is_active }: UserToken) {
+  async update(query: string, params: string[], where: string) {
     try {
       await this.connection.query(
-        'update into user_token(access_token, refresh_token, is_active) values($1, $2, $3)',
-        [access_token, refresh_token, is_active],
+        `update user_token set ${query} where ${where}`,
+        params,
       );
     } catch (error) {
       this.logger.fatal(error, 'error while trying to update user_token');
