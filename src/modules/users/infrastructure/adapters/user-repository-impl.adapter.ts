@@ -40,19 +40,11 @@ export class UserRepositoryImplementation implements UserRepository {
     }
   }
 
-  async update(user: UserEntity): Promise<void> {
+  async update(query: string, params: string[], where: string): Promise<void> {
     try {
       await this.connection.query(
-        'update users set first_name = $1, last_name = $2, email = $3, password = $4, is_verified = $5, token_id = $6 where user_id = $7',
-        [
-          user.first_name,
-          user.last_name,
-          user.email,
-          user.password,
-          user.is_verified,
-          user.token_id,
-          user.user_id,
-        ],
+        `update users set ${query} where ${where}`,
+        params,
       );
     } catch (error) {
       console.log('error', error);
