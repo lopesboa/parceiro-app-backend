@@ -7,13 +7,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { LoginService } from '../../application/types';
+import { LogOutService, LoginService } from '../../application/types';
 import { AccessTokenGuard, LocalAuthGuard, RefreshTokenGuard } from '../guards';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     @Inject('LoginService') private readonly loginService: LoginService,
+    @Inject('LogOutService') private readonly logOutService: LogOutService,
   ) {}
 
   @UseGuards(LocalAuthGuard)
@@ -25,8 +26,7 @@ export class AuthController {
   @Get('logout')
   @UseGuards(AccessTokenGuard)
   async logout(@Request() req) {
-    console.log(req.user);
-    // this.authenticationService.logout(req.user['sub']);
+    await this.logOutService.logout(req.user['userId']);
   }
 
   @UseGuards(RefreshTokenGuard)
@@ -34,7 +34,7 @@ export class AuthController {
   refreshTokens(@Request() req) {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
-    console.log(refreshToken, userId);
+    console.log(refreshToken, userId, req.user);
     // return this.authenticationService.refreshTokens(userId, refreshToken);
   }
 }
