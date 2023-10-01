@@ -14,10 +14,10 @@ export class UserRepositoryImplementation implements UserRepository {
     @Inject('Connection') private readonly connection: Connection,
     @Inject('Logger') private readonly logger: Logger,
   ) {}
-  async save(user: UserEntity): Promise<void> {
+  async save(user: UserEntity): Promise<UserEntity> {
     try {
       const text =
-        'INSERT INTO users(first_name, last_name, email, password, application_id) VALUES($1, $2, $3, $4, $5)';
+        'INSERT INTO users(first_name, last_name, email, password, application_id) VALUES($1, $2, $3, $4, $5) RETURNING *';
       const values = [
         user.first_name,
         user.last_name,
@@ -25,7 +25,9 @@ export class UserRepositoryImplementation implements UserRepository {
         user.password,
         user.application_id,
       ];
-      await this.connection.query(text, values);
+      const result = await this.connection.query(text, values);
+
+      return result.rows[0];
     } catch (error) {
       this.logger.fatal(error, 'error while trying to insert user');
       throw new UnprocessableEntityException(
