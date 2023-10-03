@@ -7,11 +7,14 @@ import {
 import { SYSTEM_ROLES } from '@/common/config';
 import { UserRepository } from '@/modules/users/domain';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { UserTokenRepository } from '../../domain/repositories';
 
 @Injectable()
 export class LoginServiceImplementation implements LoginService {
   constructor(
     @Inject('UserRepository') private readonly userRepository: UserRepository,
+    @Inject('UserTokenRepository')
+    private readonly userTokenRepository: UserTokenRepository,
     @Inject('CryptographAdapter')
     private readonly cryptographAdapter: HashComparer,
     @Inject('CreateTokenAdapter')
@@ -49,12 +52,24 @@ export class LoginServiceImplementation implements LoginService {
   }
 
   async login(user) {
+    //TODO: Check if user is verified before give permissions on login. If user is not verified, send empty
     const { accessToken, refreshToken } =
       await this.createTokenAdapter.getTokens({
         userId: user.userId,
         name: user.firstName,
         permissions: [SYSTEM_ROLES.CAR_OWNER_USER],
       });
+
+    const hashedTokens = await this.createTokenAdapter.createHashedTokens({
+      accessToken,
+      refreshToken,
+    });
+
+    await this.userTokenRepository.update(
+      'access_token = $1, refresh_token = $2',
+      [hashedTokens.accessToken, hashedTokens.refreshToken, user.userId],
+      'user_id = $3',
+    );
 
     return { accessToken, refreshToken };
   }
