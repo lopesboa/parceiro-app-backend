@@ -22,7 +22,10 @@ export class LoginServiceImplementation implements LoginService {
   ) {}
 
   async validateUser({ email, password }: SignInInputDTO) {
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.userRepository.findOne({
+      where: 'email = $1',
+      values: [email],
+    });
 
     if (!user)
       throw new UnauthorizedException(
