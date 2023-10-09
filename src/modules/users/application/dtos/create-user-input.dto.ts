@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { UUID } from 'crypto';
 
 export class CreateUserInputDTO {
   @IsString()
@@ -15,5 +16,5 @@ export class CreateUserInputDTO {
   password: string;
   @IsUUID()
   @IsNotEmpty()
-  applicationId: string;
+  applicationId: UUID;
 }

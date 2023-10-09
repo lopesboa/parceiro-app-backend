@@ -17,7 +17,7 @@ export class UserRepositoryImplementation implements UserRepository {
   async save(user: UserEntity): Promise<UserEntity> {
     try {
       const text =
-        'INSERT INTO users(first_name, last_name, email, password, application_id) VALUES($1, $2, $3, $4, $5) RETURNING *';
+        'INSERT INTO users(first_name, last_name, email, password, application_id) VALUES($1, $2, $3, $4, $5) RETURNING first_name, last_name, email, application_id, user_id';
       const values = [
         user.first_name,
         user.last_name,
@@ -72,7 +72,7 @@ export class UserRepositoryImplementation implements UserRepository {
 
       return result.rows;
     } catch (error) {
-      this.logger.fatal(error, 'error while trying to get user');
+      this.logger.fatal(error, 'error while trying to getAll user');
       throw new UnprocessableEntityException(
         {
           ...error,
@@ -80,7 +80,7 @@ export class UserRepositoryImplementation implements UserRepository {
           stack: error.stack,
           code: error.code,
         },
-        'error while trying to get user',
+        'error while trying to getAll user',
       );
     }
   }
@@ -88,20 +88,20 @@ export class UserRepositoryImplementation implements UserRepository {
   async findOne(params) {
     try {
       const result = await this.connection.query(
-        'select * from users where email = $1 or user_id = $2 limit $3 offset $4',
-        [params.email, params.userId, 1, 0],
+        `select * from users where ${params?.where} limit 1 offset 0`,
+        params?.values,
       );
 
       return result.rows[0] || null;
     } catch (error) {
-      this.logger.fatal(error, 'error while trying to get user');
+      this.logger.fatal(error, 'error while trying to findOne user');
       throw new UnprocessableEntityException(
         {
           message: error.message,
           stack: error.stack,
           code: error.code,
         },
-        'error while trying to get user',
+        'error while trying to findOne user',
       );
     }
   }
