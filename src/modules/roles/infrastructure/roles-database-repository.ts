@@ -3,11 +3,12 @@ import {
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { UUID } from 'crypto';
 
-import { Connection } from '@/common/database/types';
-import { Logger } from '@/common/Logger/infrastructure/types';
-import { RolesRepository } from '../domain/repositories';
 import { Roles } from '../domain/entities';
+import { Connection } from '@/common/database/types';
+import { RolesRepository } from '../domain/repositories';
+import { Logger } from '@/common/Logger/infrastructure/types';
 
 @Injectable()
 export class RolesDatabaseRepository implements RolesRepository {
@@ -55,11 +56,11 @@ export class RolesDatabaseRepository implements RolesRepository {
     }
   }
 
-  async findOne(roleName: string): Promise<Roles> {
+  async findOne(roleName: string, applicationId: UUID): Promise<Roles> {
     try {
       const result = await this.connection.one(
-        'select * from roles where name = $1',
-        [roleName],
+        'select * from roles where name = $1 and application_id = $2 limit 1 offset 0',
+        [roleName, applicationId],
       );
 
       return result.rows[0];
