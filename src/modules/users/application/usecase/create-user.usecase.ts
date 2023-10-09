@@ -23,7 +23,8 @@ export class CreateUser implements CreateUserUseCase {
     );
 
     const userExist = await this.userRepository.findOne({
-      email: createUserDTO.email,
+      where: 'email = $1',
+      values: [createUserDTO.email],
     });
 
     if (userExist?.email) {
@@ -39,7 +40,6 @@ export class CreateUser implements CreateUserUseCase {
     };
 
     const newUser = await this.userRepository.save(user);
-
     this.eventEmitter.emit(
       EVENTS_NAME.USER_CREATED,
       new CreateUserTokenEvent(newUser.user_id, createUserDTO.firstName),
