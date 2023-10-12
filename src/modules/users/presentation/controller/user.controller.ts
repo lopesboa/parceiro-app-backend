@@ -1,7 +1,7 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { CreateUserUseCase } from '../../application/types';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(
     @Inject('CreateUserUseCase')
