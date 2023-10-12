@@ -56,3 +56,5 @@ export const SYSTEM_ROLES = {
   CAR_OWNER_USER: 'CAR_OWNER_USER',
   GARAGE_OWNER_USER: 'GARAGE_OWNER_USER',
 } as const;
+
+export type SystemRole = (typeof SYSTEM_ROLES)[keyof typeof SYSTEM_ROLES];
