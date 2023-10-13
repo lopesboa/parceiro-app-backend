@@ -4,9 +4,12 @@ import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserInputDTO } from '../dtos';
 import { CreateUserUseCase } from '../types';
 import { UserRepository } from '../../domain';
-import { EVENTS_NAME } from '@/common/config';
+import { EVENTS_NAME, SYSTEM_ROLES } from '@/common/config';
 import { Hash } from '@/common/cryptography/adapters/types';
-import { CreateUserTokenEvent } from '@/modules/auth/application';
+import {
+  CreateUserTokenEvent,
+  AssignedRoleToUserEvent,
+} from '@/modules/auth/application';
 
 @Injectable()
 export class CreateUser implements CreateUserUseCase {
@@ -18,10 +21,6 @@ export class CreateUser implements CreateUserUseCase {
   ) {}
 
   async execute(createUserDTO: CreateUserInputDTO) {
-    const hashedPassword = await this.cryptographAdapter.hash(
-      createUserDTO.password,
-    );
-
     const userExist = await this.userRepository.findOne({
       where: 'email = $1',
       values: [createUserDTO.email],
@@ -30,6 +29,14 @@ export class CreateUser implements CreateUserUseCase {
     if (userExist?.email) {
       throw new ConflictException('A user with this email already exists.');
     }
+
+    const hashedPassword = await this.cryptographAdapter.hash(
+      createUserDTO.password,
+    );
+
+    const roleName = createUserDTO.isCarOwner
+      ? SYSTEM_ROLES.CAR_OWNER_USER
+      : SYSTEM_ROLES.GARAGE_OWNER_USER;
 
     const user = {
       first_name: createUserDTO.firstName,
@@ -43,6 +50,15 @@ export class CreateUser implements CreateUserUseCase {
     this.eventEmitter.emit(
       EVENTS_NAME.USER_CREATED,
       new CreateUserTokenEvent(newUser.user_id, createUserDTO.firstName),
+    );
+
+    this.eventEmitter.emit(
+      EVENTS_NAME.USER_ROLE_ASSIGNED,
+      new AssignedRoleToUserEvent(
+        newUser.user_id,
+        createUserDTO.applicationId,
+        roleName,
+      ),
     );
   }
 }
