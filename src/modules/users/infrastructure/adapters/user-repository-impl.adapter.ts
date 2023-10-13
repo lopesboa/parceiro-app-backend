@@ -94,7 +94,11 @@ export class UserRepositoryImplementation implements UserRepository {
 
       return result.rows[0] || null;
     } catch (error) {
-      this.logger.fatal(error, 'error while trying to findOne user');
+      this.logger.fatal(error, 'error while trying to findOne user', {
+        message: error.message,
+        stack: error.stack,
+        code: error.code,
+      });
       throw new UnprocessableEntityException(
         {
           message: error.message,
@@ -102,6 +106,40 @@ export class UserRepositoryImplementation implements UserRepository {
           code: error.code,
         },
         'error while trying to findOne user',
+      );
+    }
+  }
+
+  async findUserByEmail(email) {
+    try {
+      const result = await this.connection.query(
+        `SELECT DISTINCT ON (users.user_id)
+        users.user_id, users.email, users.password, users.first_name, users.last_name, 
+        users.last_access, users.token_id, users.is_verified, users.application_id, 
+        users_to_roles.role_id, roles.role_name, roles.permissions
+        FROM users LEFT JOIN users_to_roles 
+        ON users_to_roles.user_id = users.user_id 
+        AND users_to_roles.application_id = users.application_id
+        LEFT JOIN roles  ON roles.role_id = users_to_roles.role_id 
+        AND roles.application_id = users_to_roles.application_id
+        where email = $1 limit 1 offset 0`,
+        [email],
+      );
+
+      return result.rows[0] || null;
+    } catch (error) {
+      this.logger.fatal(error, 'error while trying to findUserByEmail', {
+        message: error.message,
+        stack: error.stack,
+        code: error.code,
+      });
+      throw new UnprocessableEntityException(
+        {
+          message: error.message,
+          stack: error.stack,
+          code: error.code,
+        },
+        'error while trying to findUserByEmail',
       );
     }
   }

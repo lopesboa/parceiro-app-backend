@@ -5,4 +5,5 @@ export type UserRepository = {
   update(query: string, params: string[], where: string): Promise<void>;
   getAll(limit: number, offset?: number): Promise<[UserEntity]>;
   findOne(params): Promise<UserEntity>;
+  findUserByEmail(email: string): Promise<any>;
 };

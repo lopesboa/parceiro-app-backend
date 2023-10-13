@@ -18,7 +18,7 @@ export class UsersToRolesDatabaseRepository implements UsersToRolesRepository {
   async save(data: UsersToRoles) {
     try {
       const text =
-        'INSERT INTO users_to_roles(user_id, role_id application_id) VALUES($1, $2, $3)';
+        'INSERT INTO users_to_roles(user_id, role_id, application_id) VALUES($1, $2, $3)';
       const values = [data.user_id, data.role_id, data.application_id];
       await this.connection.query(text, values);
     } catch (error) {
