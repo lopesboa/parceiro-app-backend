@@ -19,6 +19,7 @@ export class RefreshTokenServiceImplementation {
         refreshToken: user.refreshToken,
         userId: user.userId,
         tokenToRefresh: user.accessToken,
+        applicationId: user.applicationId,
       });
 
     await this.userTokenRepository.update(

@@ -11,6 +11,7 @@ export class GetTokensInputDTO {
   @IsNotEmpty()
   @IsArray({ each: true })
   permissions: string[];
+  applicationId: UUID;
 }
 
 export class RefreshTokenInputDTO {
@@ -29,6 +30,7 @@ export class RefreshTokenInputDTO {
   @IsNotEmpty()
   @IsString()
   tokenToRefresh: string;
+  applicationId: UUID;
 }
 
 export class CreateHashedTokensInputDTO {
