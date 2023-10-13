@@ -19,8 +19,8 @@ export class RolesDatabaseRepository implements RolesRepository {
   async save(role: Roles) {
     try {
       const text =
-        'INSERT INTO roles(name, application_id, permissions) VALUES($1, $2, $3)';
-      const values = [role.name, role.application_id, role.permissions];
+        'INSERT INTO roles(role_name, application_id, permissions) VALUES($1, $2, $3)';
+      const values = [role.role_name, role.application_id, role.permissions];
       await this.connection.query(text, values);
     } catch (error) {
       this.logger.fatal(error, 'error while trying to insert role');
@@ -39,8 +39,8 @@ export class RolesDatabaseRepository implements RolesRepository {
   async update(role: Roles) {
     try {
       await this.connection.query(
-        'update roles set name = $1, application_id = $2 where role_id = $3',
-        [role.name, role.application_id, role.role_id],
+        'update roles set role_name = $1, application_id = $2 where role_id = $3',
+        [role.role_name, role.application_id, role.role_id],
       );
     } catch (error) {
       this.logger.fatal(error, 'error while trying to update role');
@@ -59,7 +59,7 @@ export class RolesDatabaseRepository implements RolesRepository {
   async findOne(roleName: string, applicationId: UUID): Promise<Roles> {
     try {
       const result = await this.connection.one(
-        'select * from roles where name = $1 and application_id = $2 limit 1 offset 0',
+        'select * from roles where role_name = $1 and application_id = $2 limit 1 offset 0',
         [roleName, applicationId],
       );
 
