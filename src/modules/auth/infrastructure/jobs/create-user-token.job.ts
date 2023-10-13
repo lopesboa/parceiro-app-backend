@@ -1,13 +1,13 @@
 import { Job } from 'bull';
-import { UUID } from 'crypto';
 import { Inject, UnprocessableEntityException } from '@nestjs/common';
 import { Process, Processor, OnQueueError } from '@nestjs/bull';
 
-import { Logger } from '@/common/Logger/infrastructure/types';
 import { EVENTS_NAME } from '@/common/config';
+import { UserRepository } from '@/modules/users/domain';
+import { Logger } from '@/common/Logger/infrastructure/types';
+import { CreateUserTokenHandlerInput } from '../../application';
 import { UserTokenRepository } from '../../domain/repositories';
 import { CreateTokenAdapter } from '@/common/cryptography/adapters/types';
-import { UserRepository } from '@/modules/users/domain';
 
 @Processor()
 export class CreateUserTokenJob {
@@ -21,7 +21,8 @@ export class CreateUserTokenJob {
   ) {}
 
   @Process(EVENTS_NAME.USER_CREATED)
-  async handle(job: Job<{ userId: UUID; firstName: string }>) {
+  async handle(job: Job<CreateUserTokenHandlerInput>) {
+    //TODO: Check the way to add permissions to user when user verify the email
     const { accessToken, refreshToken } =
       await this.createTokenAdapter.getTokens({
         userId: job.data.userId,
