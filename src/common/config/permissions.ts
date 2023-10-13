@@ -58,3 +58,4 @@ export const SYSTEM_ROLES = {
 } as const;
 
 export type SystemRole = (typeof SYSTEM_ROLES)[keyof typeof SYSTEM_ROLES];
+export type AllPermissions = (typeof ALL_PERMISSIONS)[];
