@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { UUID } from 'crypto';
 
 export class CreateUserInputDTO {
@@ -17,4 +23,7 @@ export class CreateUserInputDTO {
   @IsUUID()
   @IsNotEmpty()
   applicationId: UUID;
+  @IsBoolean()
+  @IsNotEmpty()
+  isCarOwner: boolean = false;
 }
