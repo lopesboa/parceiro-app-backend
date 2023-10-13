@@ -1,33 +1,35 @@
-import { UserRepository } from '@/modules/users/domain';
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject, InternalServerErrorException } from '@nestjs/common';
+
+import { AddRoleToUserUseCase } from '../types';
+import { Logger } from '@/common/Logger/infrastructure/types';
 import { UsersToRolesRepository } from '../../domain/repositories';
 
-export class AddRoleToUserImplementation {
+export class AddRoleToUserUseCaseImplementation
+  implements AddRoleToUserUseCase
+{
   constructor(
-    @Inject('UserRepository') private readonly userRepository: UserRepository,
+    @Inject('Logger') private readonly logger: Logger,
     @Inject('UsersToRolesRepository')
     private readonly usersToRolesRepository: UsersToRolesRepository,
   ) {}
 
   async execute(params) {
     try {
-      const user = await this.userRepository.findOne(params.userId);
-
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-
-      this.usersToRolesRepository.save({
+      await this.usersToRolesRepository.save({
         user_id: params.userId,
         role_id: params.roleId,
         application_id: params.applicationId,
       });
-
-      // await this.usersToRolesRepository.update(
-      //   'token_id = $1, last_access = now()',
-      //   [userToken.token_id, job.data.userId],
-      //   'user_id = $2',
-      // );
-    } catch (error) {}
+    } catch (error) {
+      this.logger.error(
+        error,
+        'Error while trying to assign role to user repository:',
+        {
+          message: error.message,
+          stack: error.stack,
+        },
+      );
+      throw new InternalServerErrorException(error.message, error.stack);
+    }
   }
 }
