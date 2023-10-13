@@ -56,5 +56,11 @@ import { RolesController } from './presentation';
     },
   ],
   controllers: [RolesController],
+  exports: [
+    {
+      provide: 'AddRoleToUserUseCase',
+      useClass: AddRoleToUserUseCaseImplementation,
+    },
+  ],
 })
 export class RolesModule {}
