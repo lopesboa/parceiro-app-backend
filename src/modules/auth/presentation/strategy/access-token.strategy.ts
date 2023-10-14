@@ -6,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 type JwtPayload = {
   sub: string;
   name: string;
+  scopes: string[];
 };
 
 @Injectable()
@@ -21,7 +22,10 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.userRepository.findOne({ userId: payload.sub });
+    const user = await this.userRepository.findOne({
+      where: 'user_id = $1',
+      values: [payload.sub],
+    });
 
     return {
       userId: user.user_id,
@@ -30,6 +34,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
       email: user.email,
       applicationId: user.application_id,
       isVerified: user.is_verified,
+      scopes: payload.scopes,
     };
   }
 }
