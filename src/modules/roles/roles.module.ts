@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import {
+  AssignRoleToUserJob,
+  AssignRoleToUserListener,
   CreateRolesRoleJob,
   RoleCreatedListener,
   RolesDatabaseRepository,
@@ -7,8 +9,10 @@ import {
 } from './infrastructure';
 import { BullModule } from '@nestjs/bull';
 import {
+  AddRoleToUserUseCaseImplementation,
   CreateRolesUseCaseImplementation,
   ListRolesUseCaseImplementation,
+  ListRoleByNameImplementation,
 } from './application/usecase';
 
 @Module({
@@ -21,6 +25,8 @@ import {
   providers: [
     CreateRolesRoleJob,
     RoleCreatedListener,
+    AssignRoleToUserJob,
+    AssignRoleToUserListener,
     { provide: 'RolesRepository', useClass: RolesDatabaseRepository },
     {
       provide: 'UsersToRolesRepository',
@@ -33,6 +39,14 @@ import {
     {
       provide: 'ListRolesUseCase',
       useClass: ListRolesUseCaseImplementation,
+    },
+    {
+      provide: 'AddRoleToUserUseCase',
+      useClass: AddRoleToUserUseCaseImplementation,
+    },
+    {
+      provide: 'ListRoleByName',
+      useClass: ListRoleByNameImplementation,
     },
   ],
 })

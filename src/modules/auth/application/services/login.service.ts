@@ -4,7 +4,6 @@ import {
   CreateTokenAdapter,
   HashComparer,
 } from '@/common/cryptography/adapters/types';
-import { SYSTEM_ROLES } from '@/common/config';
 import { UserRepository } from '@/modules/users/domain';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserTokenRepository } from '../../domain/repositories';
@@ -22,16 +21,14 @@ export class LoginServiceImplementation implements LoginService {
   ) {}
 
   async validateUser({ email, password }: SignInInputDTO) {
-    const user = await this.userRepository.findOne({
-      where: 'email = $1',
-      values: [email],
-    });
+    const user = await this.userRepository.findUserByEmail(email);
 
     if (!user)
       throw new UnauthorizedException(
         '[SIGN_IN_EXCEPTION]',
-        'Email or password incorrect',
+        'Invalid email or password',
       );
+
     const isValidPassword = await this.cryptographAdapter.compare(
       password,
       user.password,
@@ -40,7 +37,7 @@ export class LoginServiceImplementation implements LoginService {
     if (!isValidPassword) {
       throw new UnauthorizedException(
         '[SIGN_IN_EXCEPTION]',
-        'Email or password incorrect',
+        'Invalid email or password',
       );
     }
 
@@ -51,17 +48,22 @@ export class LoginServiceImplementation implements LoginService {
       email: user.email,
       applicationId: user.application_id,
       tokenId: user.token_id,
+      permissions: user.permissions,
+      isVerified: user.is_verified,
     };
   }
 
   async login(user) {
     //TODO: Check if user is verified before give permissions on login. If user is not verified, send empty
+    // TODO: create an event when user login to the app to update last_access column
     const { accessToken, refreshToken } =
       await this.createTokenAdapter.getTokens({
         userId: user.userId,
         name: user.firstName,
-        permissions: [SYSTEM_ROLES.CAR_OWNER_USER],
+        permissions: user.permissions,
       });
+
+    //TODO: All this logic must not be here, it can be on other service or use case to reduce responsibility or login service
 
     const hashedTokens = await this.createTokenAdapter.createHashedTokens({
       accessToken,
