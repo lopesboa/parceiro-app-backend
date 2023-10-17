@@ -38,6 +38,7 @@ export class CreateTokenAdapterImplementation implements CreateTokenAdapter {
     userId,
     name,
     permissions,
+    applicationId,
   }: RefreshTokenInputDTO) {
     //TODO: compare the token before encrypting it
     if (!tokenToRefresh) throw new ForbiddenException('Access Denied');
@@ -48,15 +49,26 @@ export class CreateTokenAdapterImplementation implements CreateTokenAdapter {
     );
 
     if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
-    const tokens = await this.getTokens({ userId, name, permissions });
+    const tokens = await this.getTokens({
+      userId,
+      name,
+      permissions,
+      applicationId,
+    });
 
     return tokens;
   }
 
-  async getTokens({ userId, name, permissions }: GetTokensInputDTO) {
+  async getTokens({
+    userId,
+    name,
+    permissions,
+    applicationId,
+  }: GetTokensInputDTO) {
     const accessToken = this.encryptAdapter.encrypt(
       {
         sub: userId,
+        applicationId,
         name,
         scopes: permissions,
       },
@@ -72,6 +84,7 @@ export class CreateTokenAdapterImplementation implements CreateTokenAdapter {
     const refreshToken = this.encryptAdapter.encrypt(
       {
         sub: userId,
+        applicationId,
         name,
         scopes: permissions,
       },

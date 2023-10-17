@@ -49,7 +49,11 @@ export class CreateUser implements CreateUserUseCase {
     const newUser = await this.userRepository.save(user);
     this.eventEmitter.emit(
       EVENTS_NAME.USER_CREATED,
-      new CreateUserTokenEvent(newUser.user_id, createUserDTO.firstName),
+      new CreateUserTokenEvent(
+        newUser.user_id,
+        createUserDTO.firstName,
+        createUserDTO.applicationId,
+      ),
     );
 
     this.eventEmitter.emit(

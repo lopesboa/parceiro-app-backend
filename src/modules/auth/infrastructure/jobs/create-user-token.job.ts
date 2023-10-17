@@ -27,6 +27,7 @@ export class CreateUserTokenJob {
       await this.createTokenAdapter.getTokens({
         userId: job.data.userId,
         name: job.data.firstName,
+        applicationId: job.data.applicationId,
         permissions: [],
       });
     const hashedTokens = await this.createTokenAdapter.createHashedTokens({

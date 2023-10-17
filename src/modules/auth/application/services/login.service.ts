@@ -61,6 +61,7 @@ export class LoginServiceImplementation implements LoginService {
         userId: user.userId,
         name: user.firstName,
         permissions: user.permissions,
+        applicationId: user.applicationId,
       });
 
     //TODO: All this logic must not be here, it can be on other service or use case to reduce responsibility or login service

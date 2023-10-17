@@ -14,6 +14,8 @@ import {
   ListRolesUseCaseImplementation,
   ListRoleByNameImplementation,
 } from './application/usecase';
+import { RolesServiceImplementation } from './application/services';
+import { RolesController } from './presentation';
 
 @Module({
   imports: [
@@ -48,6 +50,11 @@ import {
       provide: 'ListRoleByName',
       useClass: ListRoleByNameImplementation,
     },
+    {
+      provide: 'RolesService',
+      useClass: RolesServiceImplementation,
+    },
   ],
+  controllers: [RolesController],
 })
 export class RolesModule {}
