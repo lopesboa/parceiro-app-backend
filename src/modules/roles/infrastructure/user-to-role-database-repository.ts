@@ -12,7 +12,8 @@ import { Logger } from '@/common/Logger/infrastructure/types';
 @Injectable()
 export class UsersToRolesDatabaseRepository implements UsersToRolesRepository {
   constructor(
-    @Inject('Connection') private readonly connection: Connection,
+    @Inject('Connection')
+    private readonly connection: Connection<{ rows: [UsersToRoles] }>,
     @Inject('Logger') private readonly logger: Logger,
   ) {}
   async save(data: UsersToRoles) {
@@ -20,7 +21,9 @@ export class UsersToRolesDatabaseRepository implements UsersToRolesRepository {
       const text =
         'INSERT INTO users_to_roles(user_id, role_id, application_id) VALUES($1, $2, $3)';
       const values = [data.user_id, data.role_id, data.application_id];
-      await this.connection.query(text, values);
+      const result = await this.connection.query(text, values);
+
+      return result.rows[0];
     } catch (error) {
       this.logger.fatal(error, 'error while trying to insert users_to_roles');
       throw new UnprocessableEntityException(
