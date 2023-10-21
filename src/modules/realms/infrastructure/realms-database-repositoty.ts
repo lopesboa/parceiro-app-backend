@@ -17,9 +17,12 @@ export class RealmsDatabaseRepository implements RealmsRepository {
   ) {}
   async save(realm: Realms) {
     try {
-      const text = 'INSERT INTO realms(name, description) VALUES($1, $2)';
+      const text =
+        'INSERT INTO realms(name, description) VALUES($1, $2) RETURNING *';
       const values = [realm.name, realm.description];
-      await this.connection.query(text, values);
+      const result = await this.connection.query(text, values);
+
+      return result.rows[0];
     } catch (error) {
       this.logger.fatal(error, 'error while trying to insert realm');
       throw new UnprocessableEntityException(

@@ -1,5 +1,6 @@
 export * from './hash';
 export * from './hash-comparer';
+export * from './create-token-adapter';
 export * from './decode-adapter.types';
 export * from './encrypt-adapter.types';
 export * from './decrypt-adapter.types';

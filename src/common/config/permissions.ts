@@ -53,5 +53,9 @@ export const USER_WITH_GARAGE_ROLE_PERMISSIONS = [
 
 export const SYSTEM_ROLES = {
   SUPER_ADMIN: 'SUPER_ADMIN',
-  APPLICATION_USER: 'APPLICATION_USER',
+  CAR_OWNER_USER: 'CAR_OWNER_USER',
+  GARAGE_OWNER_USER: 'GARAGE_OWNER_USER',
 } as const;
+
+export type SystemRole = (typeof SYSTEM_ROLES)[keyof typeof SYSTEM_ROLES];
+export type AllPermissions = (typeof ALL_PERMISSIONS)[];
