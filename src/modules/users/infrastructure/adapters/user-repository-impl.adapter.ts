@@ -1,12 +1,13 @@
 import {
   Inject,
   Injectable,
-  UnprocessableEntityException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 
 import { Connection } from '@/common/database/types';
 import { UserEntity, UserRepository } from '../../domain';
 import { Logger } from '@/common/Logger/infrastructure/types';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class UserRepositoryImplementation implements UserRepository {
@@ -30,7 +31,7 @@ export class UserRepositoryImplementation implements UserRepository {
       return result.rows[0];
     } catch (error) {
       this.logger.fatal(error, 'error while trying to insert user');
-      throw new UnprocessableEntityException(
+      throw new InternalServerErrorException(
         {
           ...error,
           message: error.message,
@@ -49,9 +50,8 @@ export class UserRepositoryImplementation implements UserRepository {
         params,
       );
     } catch (error) {
-      console.log('error', error);
       this.logger.fatal(error, 'error while trying to update user');
-      throw new UnprocessableEntityException(
+      throw new InternalServerErrorException(
         {
           ...error,
           message: error.message,
@@ -73,7 +73,7 @@ export class UserRepositoryImplementation implements UserRepository {
       return result.rows;
     } catch (error) {
       this.logger.fatal(error, 'error while trying to getAll user');
-      throw new UnprocessableEntityException(
+      throw new InternalServerErrorException(
         {
           ...error,
           message: error.message,
@@ -99,7 +99,7 @@ export class UserRepositoryImplementation implements UserRepository {
         stack: error.stack,
         code: error.code,
       });
-      throw new UnprocessableEntityException(
+      throw new InternalServerErrorException(
         {
           message: error.message,
           stack: error.stack,
@@ -133,13 +133,44 @@ export class UserRepositoryImplementation implements UserRepository {
         stack: error.stack,
         code: error.code,
       });
-      throw new UnprocessableEntityException(
+      throw new InternalServerErrorException(
         {
           message: error.message,
           stack: error.stack,
           code: error.code,
         },
         'error while trying to findUserByEmail',
+      );
+    }
+  }
+
+  async getUserInformation(userId: UUID, applicationId: UUID) {
+    try {
+      const result = await this.connection.query(
+        `SELECT DISTINCT ON (users.user_id)
+        users.user_id, users.email, users.first_name, users.last_name, 
+        users.last_access, users.is_verified, users.application_id, 
+        profile.birth_date, profile.gender, profile.phone, profile.thumb
+        FROM users LEFT JOIN profile 
+        ON profile.user_id = users.user_id 
+        where users.user_id = $1 and application_id = $2 limit 1 offset 0`,
+        [userId, applicationId],
+      );
+
+      return result.rows[0] || null;
+    } catch (error) {
+      this.logger.fatal(error, 'error while trying to getUserInformation', {
+        message: error.message,
+        stack: error.stack,
+        code: error.code,
+      });
+      throw new InternalServerErrorException(
+        {
+          message: error.message,
+          stack: error.stack,
+          code: error.code,
+        },
+        'error while trying to getUserInformation',
       );
     }
   }

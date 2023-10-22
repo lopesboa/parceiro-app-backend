@@ -12,7 +12,7 @@ import {
 } from '@/modules/auth/application';
 
 @Injectable()
-export class CreateUser implements CreateUserUseCase {
+export class CreateUserUseCaseImplementation implements CreateUserUseCase {
   constructor(
     @Inject('UserRepository') private readonly userRepository: UserRepository,
     @Inject('CryptographAdapter') private readonly cryptographAdapter: Hash,

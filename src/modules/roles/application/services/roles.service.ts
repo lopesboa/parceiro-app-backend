@@ -25,7 +25,6 @@ export class RolesServiceImplementation implements RolesService {
         permissions: permissions as unknown as string[],
       });
     } catch (error) {
-      console.log({ error });
       this.logger.error(error, 'Error while trying to create role', {
         message: error.message,
         stack: error.stack,

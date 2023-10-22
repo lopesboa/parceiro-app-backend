@@ -39,7 +39,7 @@ export class AuthController {
 
   @Roles(...ALL_PERMISSIONS)
   @UseGuards(RefreshTokenGuard, RolesGuard)
-  @Get('refresh')
+  @Get('token')
   refreshTokens(@Request() req) {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
