@@ -1,4 +1,5 @@
-import { UserEntity } from '../entities/user.entity';
+import { UUID } from 'crypto';
+import { UserDetailsEntity, UserEntity } from '../entities';
 
 export type UserRepository = {
   save(user: Partial<UserEntity>): Promise<UserEntity>;
@@ -6,4 +7,8 @@ export type UserRepository = {
   getAll(limit: number, offset?: number): Promise<[UserEntity]>;
   findOne(params): Promise<UserEntity>;
   findUserByEmail(email: string): Promise<any>;
+  getUserInformation(
+    userId: UUID,
+    applicationId: UUID,
+  ): Promise<UserDetailsEntity>;
 };
