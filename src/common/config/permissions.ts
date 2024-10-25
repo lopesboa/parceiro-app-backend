@@ -57,5 +57,7 @@ export const SYSTEM_ROLES = {
   GARAGE_OWNER_USER: 'GARAGE_OWNER_USER',
 } as const;
 
+// CREATE TYPE SYSTEM_ROLES AS ENUM ('SUPER_ADMIN', 'CAR_OWNER_USER', 'GARAGE_OWNER_USER');
+
 export type SystemRole = (typeof SYSTEM_ROLES)[keyof typeof SYSTEM_ROLES];
 export type AllPermissions = (typeof ALL_PERMISSIONS)[];

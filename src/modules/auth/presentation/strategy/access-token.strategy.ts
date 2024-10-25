@@ -21,6 +21,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
+  //TODO: I think don't need to find user here, we may need to send more data in order to use latter.
   async validate(payload: JwtPayload) {
     const user = await this.userRepository.findOne({
       where: 'user_id = $1',

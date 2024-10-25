@@ -9,7 +9,7 @@ const pinoHttp = {
   name: process.env.APP_NAME,
   level: 'info',
   transport:
-    process.env.NODE_ENV === 'development'
+    process.env.NODE_ENV !== 'development'
       ? { target: 'pino-pretty' }
       : undefined,
   redact: {
